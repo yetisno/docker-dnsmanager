@@ -1,0 +1,86 @@
+#!/bin/bash
+
+rm DNService/dnservice.pid
+rm DNSAdmin/unicorn.pid
+
+export DNS_RELOAD_KEY=$(ruby -e "require 'securerandom'; puts SecureRandom.hex(64)")
+export SECRET_KEY_BASE=$(ruby -e "require 'securerandom'; puts SecureRandom.hex(64)")
+
+globalInit(){
+	cp assets/unicorn.rb DNSAdmin/config/
+
+	sed -i 's,{{WEB_BIND_IP}},'"${WEB_BIND_IP}"',g' DNSAdmin/config/unicorn.rb
+	sed -i 's,{{WEB_BIND_PORT}},'"${WEB_BIND_PORT}"',g' DNSAdmin/config/unicorn.rb
+
+	echo DNSAdmin settinng
+	cat DNSAdmin/config/dnsadmin.yml
+
+	echo DNService settinng
+	cat DNService/config/dnservice.yml
+}
+
+DNServiceInit(){
+	pushd DNService
+	bundle install
+	popd
+}
+
+DNSAdminInit(){
+	pushd DNSAdmin
+	bundle install
+	popd
+}
+
+DNServiceRun(){
+	pushd DNService
+	rake start
+	popd
+}
+
+DNSAdminRun(){
+	pushd DNSAdmin
+	rake dns:run
+	popd
+}
+
+
+appStart(){
+	appInit
+	DNServiceRun
+	DNSAdminRun
+}
+
+appInit(){
+	globalInit
+	DNServiceInit
+	DNSAdminInit
+}
+
+appHelp () {
+  echo "Available options:"
+  echo " app:start          - Starts the DNSManager (default)"
+  echo " app:help           - Displays the help"
+  echo " [command]          - Execute the specified linux command eg. bash."
+}
+
+case "$1" in
+  app:start)
+    appStart
+    ;;
+  app:help)
+    appHelp
+    ;;
+  *)
+    if [ -x $1 ]; then
+      $1
+    else
+      prog=$(which $1)
+      if [ -n "${prog}" ] ; then
+        shift 1
+        $prog $@
+      else
+        appHelp
+      fi
+    fi
+    ;;
+esac
