@@ -1,13 +1,13 @@
 # USAGE #
 see [DNSManager](https://github.com/yetisno/DNSManager)
-![DNSManager](dnsmanager.png)
+
 ## BUILD ##
 ```bash
 docker build \
 --rm=true \
 --force-rm=true \
 --no-cache=true \
--t yeti/dnsmanager:v1.4.3 .
+-t yeti/dnsmanager:v1.4.4 .
 ```
 
 ## ENV Parameter ##
@@ -41,11 +41,11 @@ docker run \
 -v /pool/service-storage/dns/dnservice/db:/root/DNSManager/DNService/db \
 -v /pool/service-storage/dns/dnservice/log:/root/DNSManager/DNService/log \
 -v /pool/service-storage/dns/dnsadmin/log:/root/DNSManager/DNSAdmin/log \
--t yeti/dnsmanager:v1.4.3
+-t yeti/dnsmanager:v1.4.4
 ```
 
 ## DELETE ##
-    docker stop dnsmanager;docker rm dnsmanager; docker rmi yeti/dnsmanager:v1.4.3
+    docker stop dnsmanager;docker rm dnsmanager; docker rmi yeti/dnsmanager:v1.4.4
 
 ## DDNS ##
     curl -X PUT -d "{\"ddn\":{\"to_ip\":\"${TO_IP}\"}}" -H "Content-Type: application/json" http://example.com/api/domains/example-com/ddns/<token>
