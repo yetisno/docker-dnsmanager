@@ -1,7 +1,7 @@
 # Install DNSManager
 
 # Pull base image.
-FROM     yeti/ruby:2.2.1
+FROM     yeti/ruby:2.3.0
 MAINTAINER Yeti Sno
 
 WORKDIR /root
